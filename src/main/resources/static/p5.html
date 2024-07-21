@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分页数据展示</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        td { border-bottom: 1px solid #ddd; }
+        .age-details { font-size: 0.8em; color: #666; }
+        .pagination { display: flex; justify-content: center; margin: 20px 0; }
+        .page-link { padding: 8px 16px; margin: 0 4px; border: 1px solid #ddd; cursor: pointer; }
+        .active { background-color: #007bff; color: white; border-color: #007bff; }
+    </style>
+</head>
+<body>
+
+<h1>分页数据展示</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>姓名</th>
+        <th>年龄 & 细节</th>
+        <th>身高(cm)</th>
+    </tr>
+    </thead>
+    <tbody id="dataBody">
+    <!-- 动态数据将填充到这里 -->
+    </tbody>
+</table>
+
+<div class="pagination" id="pagination">
+    <!-- 分页按钮将在这里生成 -->
+</div>
+
+<script>
+    const dummyData = Array.from({length: 100}, (_, i) => ({
+        name: `姓名${i+1}`,
+        age: Math.floor(Math.random() * 60) + 18,
+        gender: ['男', '女'][Math.floor(Math.random() * 2)],
+        phone: `123-456-789${i+1}`,
+        height: Math.floor(Math.random() * 30) + 150
+    })); // 示例数据，共100条
+
+    let currentPage = 1;
+    const itemsPerPage = 20;
+
+    function displayData() {
+        const dataBody = document.getElementById('dataBody');
+        dataBody.innerHTML = ''; // 清空现有数据
+
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const currentData = dummyData.slice(startIndex, endIndex);
+
+        currentData.forEach(person => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${person.name}</td>
+                <td>
+                    ${person.age}<br>
+                    <span class="age-details">性别: ${person.gender} | 电话: ${person.phone}</span>
+                </td>
+                <td>${person.height}</td>
+                <td>
+                    <a href="#" class="details-link" data-person-id="${dummyData.indexOf(person)}">查看详情</a>
+                </td>
+            `;
+            dataBody.appendChild(row);
+        });
+    }
+
+    function updatePagination() {
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = ''; // 清空现有分页按钮
+
+        const totalPages = Math.ceil(dummyData.length / itemsPerPage);
+        for (let i = 1; i <= totalPages; i++) {
+            const link = document.createElement('button');
+            link.textContent = i;
+            link.classList.add('page-link');
+            if (i === currentPage) {
+                link.classList.add('active');
+            }
+            link.addEventListener('click', () => {
+                currentPage = i;
+                displayData();
+                updatePagination();
+            });
+            pagination.appendChild(link);
+        }
+    }
+
+    // 添加点击事件处理函数
+    document.getElementById('dataBody').addEventListener('click', function(e) {
+        if (e.target.classList.contains('details-link')) {
+            const personId = e.target.dataset.personId;
+            const person = dummyData[personId];
+            const url = `detail.html?id=${personId}`; // 假设的详情页面URL模板
+            // 阻止默认点击事件，模拟跳转
+            e.preventDefault();
+            console.log(`将跳转到详情页面: ${url}`);
+            // 实际应用中，您可能会使用 window.location.href = url 来进行页面跳转
+        }
+    });
+
+    // 初始化页面展示
+    displayData();
+    updatePagination();
+</script>
+
+</body>
+</html>

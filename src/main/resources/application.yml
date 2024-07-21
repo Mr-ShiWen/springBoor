@@ -1,0 +1,20 @@
+student:
+  name: main yml
+  age: 18
+book:
+  name: <main yml>
+  price: 10
+my-profile:
+  name: shiwen
+  email: 1793604803@qq.com
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/sw_test
+    username: root
+    password: 940216shiwen
+#mybatis:
+#  config-location: mybatis/mybatis-config.xml
+#  mapper-locations: classpath:mybatis.maps/*.xml
+

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>数据分页展示</title>
+  <style>
+    .page-item {
+      display: inline-block;
+      margin-right: 10px;
+    }
+    .active {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div id="data-container">
+  <!-- 这里将会动态插入数据项 -->
+</div>
+
+<div id="pagination">
+  <!-- 分页导航将在这里生成 -->
+</div>
+
+<script>
+  // 假设的数据数组，实际应用中这应该来自服务器
+  const data = [
+    '数据项1', '数据项2', '数据项3', '数据项4', '数据项5','数据项6', '数据项7', '数据项8', '数据项9', '数据项10',
+    '数据项6', '数据项7', '数据项8', '数据项9', '数据项10',
+    // ... 更多数据项
+  ];
+
+  // 每页显示的记录数
+  const itemsPerPage = 20;
+
+  // 当前页码
+  let currentPage = 1;
+
+  function displayData() {
+    // 清空当前显示的数据
+    document.getElementById('data-container').innerHTML = '';
+
+    // 计算起始和结束索引
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    // 显示当前页的数据
+    for (let i = startIndex; i < endIndex && i < data.length; i++) {
+      const item = document.createElement('div');
+      item.textContent = data[i];
+      document.getElementById('data-container').appendChild(item);
+    }
+
+    // 更新分页导航
+    updatePagination();
+  }
+
+  function updatePagination() {
+    // 清空旧的分页导航
+    document.getElementById('pagination').innerHTML = '';
+
+    // 计算总页数
+    const totalPages = Math.ceil(data.length / itemsPerPage);
+
+    // 生成分页链接
+    for (let i = 1; i <= totalPages; i++) {
+      const link = document.createElement('a');
+      link.href = '#';
+      link.textContent = i;
+      link.classList.add('page-item');
+      if (i === currentPage) {
+        link.classList.add('active');
+      }
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        currentPage = i;
+        displayData();
+      });
+      document.getElementById('pagination').appendChild(link);
+    }
+  }
+
+  // 初始化显示第一页数据
+  displayData();
+</script>
+
+</body>
+</html>

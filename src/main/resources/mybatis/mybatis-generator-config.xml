@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <!-- 引入外部配置文件，不支持 yml，只能 properties -->
+    <properties resource="mybatis/mybatisGen.properties"/>
+
+    <!-- context的子元素必须按照它给出的顺序
+      property*,plugin*,commentGenerator?,jdbcConnection,javaTypeResolver?,
+      javaModelGenerator,sqlMapGenerator?,javaClientGenerator?,table+
+    -->
+    <!--  targetRuntime:
+        MyBatis3：普通 xml mapper、注解接口mapper
+        MyBatis3Simple：比 MyBatis3 上生成一些 sql
+        MyBatis3DynamicSQL ：动态 sql
+     -->
+    <context id="Mysql" targetRuntime="MyBatis3" defaultModelType="flat">
+        <property name="enableExample" value="true"/>
+
+
+        <!-- 这个插件给生成的Java模型对象增加了equals和hashCode方法 -->
+<!--        <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/>-->
+
+        <!-- 注释 -->
+        <commentGenerator>
+            <!-- 是否不生成注释 -->
+            <property name="suppressAllComments" value="true"/>
+            <!-- 不希望生成的注释中包含时间戳 -->
+            <property name="suppressDate" value="true"/>
+            <!-- 添加 db 表中字段的注释 -->
+            <property name="addRemarkComments" value="true"/>
+        </commentGenerator>
+
+        <!-- jdbc连接 -->
+        <jdbcConnection driverClass="${spring.datasource.driver-class-name}"
+                        connectionURL="${spring.datasource.url}"
+                        userId="${spring.datasource.username}"
+                        password="${spring.datasource.password}">
+            <!--  高版本的 mysql-connector-java 需要设置 nullCatalogMeansCurrent=true，低版本的默认就是 true-->
+            <!-- 意思是：如果 table 不设置具体数据库（mysql 是通过 catalog 设置），就用 url 里面的数据库  -->
+            <!-- mysql 不要设置 catalog，不然生成的 xml mapper 的 sql 有问题。在 url 里指定 db 再设置这个为 true 即可   -->
+            <property name="nullCatalogMeansCurrent" value="true"/>
+        </jdbcConnection>
+
+        <!-- 类型转换 -->
+        <javaTypeResolver>
+            <!--是否使用bigDecimal，默认false。
+                false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer
+                true，把JDBC DECIMAL 和 NUMERIC 类型解析为java.math.BigDecimal-->
+            <property name="forceBigDecimals" value="true"/>
+            <!--默认false
+                false，将所有 JDBC 的时间类型解析为 java.util.Date
+                true，将 JDBC 的时间类型按如下规则解析
+                    DATE	                -> java.time.LocalDate
+                    TIME	                -> java.time.LocalTime
+                    TIMESTAMP               -> java.time.LocalDateTime
+                    TIME_WITH_TIMEZONE  	-> java.time.OffsetTime
+                    TIMESTAMP_WITH_TIMEZONE	-> java.time.OffsetDateTime
+                -->
+            <property name="useJSR310Types" value="false"/>
+        </javaTypeResolver>
+
+        <!-- entity 配置 -->
+        <javaModelGenerator targetPackage="org.example.myspringboot.mybatis.entity" targetProject="src/main/java">
+            <!-- 是否让 schema 作为包的后缀(包内新建 schema 包)，默认为false -->
+            <property name="enableSubPackages" value="false"/>
+            <!-- 是否针对string类型的字段在set方法中进行修剪，默认false -->
+            <property name="trimStrings" value="false"/>
+        </javaModelGenerator>
+
+        <!-- xml mapper 配置 -->
+        <sqlMapGenerator targetPackage="mybatis.maps" targetProject="src/main/resources">
+            <!--            <property name="enableSubPackages" value="true"/>-->
+        </sqlMapGenerator>
+
+
+        <!-- MyBatis3、MyBatis3Simple 时：
+            type=XMLMAPPER：会创建 xml mapper 对应的接口
+            type=ANNOTATEDMAPPER：会创建带注解的接口 mapper，不再创建 xml mapper-->
+        <!-- MyBatis3DynamicSQL 时：
+            type 没有意义，创建的动态 sql 的接口-->
+        <javaClientGenerator targetPackage="org.example.myspringboot.mybatis.mapper.xml" targetProject="src/main/java"
+                             type="XMLMAPPER">
+            <!--            <property name="enableSubPackages" value="true"/>-->
+        </javaClientGenerator>
+
+
+        <table tableName="user" domainObjectName="User"
+               enableCountByExample="false"
+               enableDeleteByExample="false"
+               enableSelectByExample="false"
+               enableUpdateByExample="false"
+               selectByExampleQueryId="false">
+            <!--是否使用实际列名,默认为false-->
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql" identity="true"/>
+        </table>
+
+
+    </context>
+</generatorConfiguration>
