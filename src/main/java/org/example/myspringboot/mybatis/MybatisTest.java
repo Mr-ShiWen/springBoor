@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 import static org.example.myspringboot.mybatis.mapper.dynamic.UserDynamicSqlSupport.id;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
-//@Component
+@Component
 @Slf4j
 public class MybatisTest {
 
